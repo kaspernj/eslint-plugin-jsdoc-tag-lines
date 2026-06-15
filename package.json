@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-jsdoc-tag-lines",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "ESLint plugin for stricter JSDoc tag-line formatting.",
   "type": "module",
   "main": "index.js",
