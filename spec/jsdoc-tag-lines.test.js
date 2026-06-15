@@ -45,6 +45,22 @@ describe("jsdoc-tag-lines rule", () => {
     assert.deepEqual(messages, [])
   })
 
+  it("allows ordinary JSDoc prose that mentions type tags", () => {
+    const messages = lintSource(`
+      /** Use @type to annotate values. */
+      const value = "name"
+
+      /**
+       * @deprecated use @type instead.
+       */
+      function oldValue() {
+        return value
+      }
+    `)
+
+    assert.deepEqual(messages, [])
+  })
+
   it("rejects multi-line JSDoc tag lines without an asterisk prefix", () => {
     const messages = lintSource(`
       /**

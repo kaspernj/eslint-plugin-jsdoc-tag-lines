@@ -22,6 +22,22 @@ function lineAfterJSDocPrefix(line) {
 }
 
 /**
+ * @param {import("eslint").SourceCode} sourceCode - ESLint source code object.
+ * @param {SourceComment} comment - Comment node.
+ * @returns {boolean} Whether the comment is immediately followed by a cast expression.
+ */
+function isInlineTypeCastComment(sourceCode, comment) {
+  const nextToken = sourceCode.getTokenAfter(comment, {includeComments: false})
+
+  return Boolean(
+    nextToken &&
+      nextToken.type === "Punctuator" &&
+      nextToken.value === "(" &&
+      nextToken.loc.start.line === comment.loc.end.line
+  )
+}
+
+/**
  * @param {import("eslint").Rule.RuleContext} context - ESLint rule context.
  * @param {SourceComment} comment - Comment node.
  * @param {number} index - Comment value line index.
@@ -85,7 +101,12 @@ export default {
 
             const text = lineAfterJSDocPrefix(line)
 
-            if (proseBeforeTypePattern.test(text) && !typeTagPattern.test(text)) {
+            if (
+              !multiline &&
+              isInlineTypeCastComment(sourceCode, comment) &&
+              proseBeforeTypePattern.test(text) &&
+              !typeTagPattern.test(text)
+            ) {
               reportCommentLine(context, comment, index, "proseBeforeType")
             }
           })
